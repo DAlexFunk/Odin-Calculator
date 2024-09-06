@@ -1,6 +1,5 @@
 * {
     font-family: monospace, monospace;
-    border-radius: 8px;
 }
 
 body {
@@ -19,6 +18,7 @@ body {
     max-width: 400px;
     min-height: 512px;
     padding: 10px;
+    border-radius: 18px;
     
     flex: 1;
     
@@ -37,6 +37,7 @@ body {
     
     padding: 0 10px;
     min-height: 100px;
+    border-radius: 8px;
     
     font-size: 64px;
 
@@ -63,6 +64,7 @@ button {
     
     min-height: 94.4px;
     margin: 1px;
+    border-radius: 8px;
     
     font-size: 32px;
     
