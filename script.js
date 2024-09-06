@@ -3,6 +3,7 @@ const operatorButtons = document.querySelectorAll(".operator");
 const clearButton = document.querySelector("#clear");
 const backButton = document.querySelector("#back");
 const equalsButton = document.querySelector("#enter");
+const decimalButton = document.querySelector("#decimal");
 const screen = document.querySelector(".screen");
 
 
@@ -10,22 +11,23 @@ let currentDisplay = "";
 let num1 = "";
 let num2 = "";
 let operator = "";
+let largeNumber = 1e10;
 
 
 function add(a, b) {
-    return a + b;
+    return Math.round((a + b) * largeNumber) / largeNumber;
 }
 
 function subtract(a,b) {
-    return a - b;
+    return Math.round((a - b) * largeNumber) / largeNumber;
 }
 
 function multiply(a,b) {
-    return a * b;
+    return Math.round(a * b * largeNumber) / largeNumber;
 }
 
 function divide(a,b) {
-    return a / b;
+    return Math.round(a / b * largeNumber) / largeNumber;
 }
 
 function operate(num1, num2, operator) {
@@ -45,9 +47,19 @@ function operate(num1, num2, operator) {
     return "ERROR";
 }
 
+function updateDecimalActivity() {
+    if (currentDisplay.includes(".")) {
+        decimalButton.removeEventListener("click", numberAction);
+    } else {
+        decimalButton.addEventListener("click", numberAction);
+    }   
+}
+
 function updateDisplay() {
+    currentDisplay = String(currentDisplay);
     if (currentDisplay.length > 10) currentDisplay = currentDisplay.slice(0, 10);
     screen.textContent = currentDisplay;
+    updateDecimalActivity();
 }
 
 function operatorAction(evt) {
@@ -64,12 +76,14 @@ function operatorAction(evt) {
     }
     updateDisplay();
     currentDisplay = "";
+    updateDecimalActivity();
 }
 
 function numberAction(evt) {
     updateDisplay();
     currentDisplay += evt.currentTarget.textContent;
     updateDisplay();
+    updateDecimalActivity();
 }
 
 function clearAction() {
@@ -78,11 +92,13 @@ function clearAction() {
     operator = "";
     currentDisplay = "";
     updateDisplay();
+    updateDecimalActivity();
 }
 
 function backAction() {
     currentDisplay = currentDisplay.slice(0, currentDisplay.length - 1);
     updateDisplay();
+    updateDecimalActivity();
 }
 
 function equalsAction() {
@@ -93,6 +109,7 @@ function equalsAction() {
     num2 = "";
     operator = "";
     currentDisplay = "";
+    updateDecimalActivity();
 }
 
 operatorButtons.forEach((button) => button.addEventListener("click", operatorAction));
