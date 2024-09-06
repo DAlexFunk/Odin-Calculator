@@ -1,3 +1,17 @@
+const numberButtons = document.querySelectorAll(".number");
+const operatorButtons = document.querySelectorAll(".operator");
+const clearButton = document.querySelector("#clear");
+const backButton = document.querySelector("#back");
+const equalsButton = document.querySelector("#enter");
+const screen = document.querySelector(".screen");
+
+
+let currentDisplay = "";
+let num1 = "";
+let num2 = "";
+let operator = "";
+
+
 function add(a, b) {
     return a + b;
 }
@@ -31,60 +45,58 @@ function operate(num1, num2, operator) {
     return "ERROR";
 }
 
-let num1 = "";
-let num2 = "";
-let result = "";
-let operator = "";
+function updateDisplay() {
+    if (currentDisplay.length > 10) currentDisplay = currentDisplay.slice(0, 10);
+    screen.textContent = currentDisplay;
+}
 
-const numberButtons = document.querySelectorAll(".number");
-const clearButton = document.querySelector("#clear");
-const backButton = document.querySelector("#back");
-const screen = document.querySelector(".screen");
-const addButton = document.querySelector("#plus");
-const subtractButton = document.querySelector("#minus");
-const multiplyButton = document.querySelector("#multiply");
-const divideButton = document.querySelector("#divide");
-const equalsButton = document.querySelector("#enter");
+function operatorAction(evt) {
+    if (num1 === "") {
+        operator = evt.currentTarget.textContent;
+        num1 = Number(currentDisplay);
+        currentDisplay = "";
+    } else {
+        num2 = Number(currentDisplay);
+        currentDisplay = operate(num1, num2, operator);
+        num1 = Number(currentDisplay);
+        operator = evt.currentTarget.textContent;
+        num2 = "";
+    }
+    updateDisplay();
+    currentDisplay = "";
+}
 
+function numberAction(evt) {
+    updateDisplay();
+    currentDisplay += evt.currentTarget.textContent;
+    updateDisplay();
+}
 
-clearButton.addEventListener("click", () => {
-    screen.textContent = "";
-    operator = "";
+function clearAction() {
     num1 = "";
-});
+    num2 = "";
+    operator = "";
+    currentDisplay = "";
+    updateDisplay();
+}
 
-backButton.addEventListener("click", () => screen.textContent = screen.textContent.slice(0, screen.textContent.length - 1));
+function backAction() {
+    currentDisplay = currentDisplay.slice(0, currentDisplay.length - 1);
+    updateDisplay();
+}
 
-numberButtons.forEach((button) => button.addEventListener("click", () => {
-    if (screen.textContent.length < 10) screen.textContent += button.textContent;
-}));
+function equalsAction() {
+    num2 = Number(currentDisplay);
+    currentDisplay = operate(num1, num2, operator);
+    updateDisplay();
+    num1 = "";
+    num2 = "";
+    operator = "";
+    currentDisplay = "";
+}
 
-addButton.addEventListener("click", () => {
-    num1 = Number(screen.textContent);
-    operator = "+";
-    screen.textContent = "";
-})
-
-subtractButton.addEventListener("click", () => {
-    num1 = Number(screen.textContent);
-    operator = "-";
-    screen.textContent = "";
-})
-
-multiplyButton.addEventListener("click", () => {
-    num1 = Number(screen.textContent);
-    operator = "*";
-    screen.textContent = "";
-})
-
-divideButton.addEventListener("click", () => {
-    num1 = Number(screen.textContent);
-    operator = "/";
-    screen.textContent = "";
-})
-
-equalsButton.addEventListener("click", () => {
-    result = operate(Number(num1), Number(screen.textContent), operator);
-    num1 = result;
-    screen.textContent = result;
-})
+operatorButtons.forEach((button) => button.addEventListener("click", operatorAction));
+numberButtons.forEach((button) => button.addEventListener("click", numberAction));
+clearButton.addEventListener("click", clearAction);
+backButton.addEventListener("click", backAction);
+equalsButton.addEventListener("click", equalsAction);
